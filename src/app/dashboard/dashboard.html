@@ -122,26 +122,6 @@
         </div>
       </div>
       <div class="topbar__actions">
-        <!-- Widget customization menu -->
-        <button mat-stroked-button [matMenuTriggerFor]="widgetMenu" class="topbar__customize-btn">
-          <mat-icon>tune</mat-icon>
-          Customize
-        </button>
-        <mat-menu #widgetMenu="matMenu" class="widget-menu">
-          <div class="widget-menu__header">Show / hide widgets</div>
-          @for (w of widgets(); track w.id) {
-            @if (!w.adminOnly || auth.isAdmin()) {
-              <button mat-menu-item (click)="toggleWidget(w.id); $event.stopPropagation()">
-                <mat-icon [class.widget-menu__icon--on]="w.visible">
-                  {{ w.visible ? 'check_box' : 'check_box_outline_blank' }}
-                </mat-icon>
-                <mat-icon>{{ w.icon }}</mat-icon>
-                {{ w.label }}
-              </button>
-            }
-          }
-        </mat-menu>
-
         @if (activeSection() !== 'subscriptions') {
           <button mat-flat-button class="topbar__add-btn" (click)="openAddSubscription()">
             <mat-icon>add</mat-icon>

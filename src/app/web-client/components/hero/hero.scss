@@ -366,3 +366,123 @@ $border: #e5e7eb;
   0%, 100% { opacity: 1; }
   50% { opacity: .35; }
 }
+
+.hero {
+  /* =========================
+     📱 TABLET (≤ 1024px)
+  ========================= */
+  @media (max-width: 1024px) {
+    &__container {
+      grid-template-columns: 1fr;
+      gap: 48px;
+      text-align: center;
+    }
+
+    &__content {
+      align-items: center;
+    }
+
+    &__description {
+      max-width: 600px;
+    }
+
+    &__stats {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    &__visual {
+      height: auto;
+    }
+  }
+
+  /* =========================
+     📱 MOBILE (≤ 768px)
+  ========================= */
+  @media (max-width: 768px) {
+    padding: 60px 16px 80px;
+
+    &__title {
+      font-size: 38px;
+      letter-spacing: -1px;
+      line-height: 1.15;
+    }
+
+    &__description {
+      font-size: 15px;
+    }
+
+    &__actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    &__btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    &__stats {
+      gap: 16px;
+    }
+
+    &__stat-divider {
+      display: none;
+    }
+
+    /* 🔹 Dashboard scaling */
+    &__dashboard {
+      width: 100%;
+      max-width: 340px;
+    }
+
+    &__sub-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* 🔹 Floating cards reposition */
+    &__float {
+      transform: scale(0.9);
+
+      &--alert {
+        bottom: -10px;
+        left: 10px;
+      }
+
+      &--saving {
+        top: -10px;
+        right: 10px;
+      }
+    }
+  }
+
+  /* =========================
+     📱 SMALL MOBILE (≤ 480px)
+  ========================= */
+  @media (max-width: 480px) {
+    &__title {
+      font-size: 32px;
+    }
+
+    &__tag {
+      font-size: 12px;
+      padding: 5px 10px;
+    }
+
+    &__dashboard {
+      padding: 16px;
+    }
+
+    &__sub-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &__sub-tile {
+      padding: 8px 4px;
+    }
+
+    &__float {
+      display: none; // prevents clutter on very small screens
+    }
+  }
+}

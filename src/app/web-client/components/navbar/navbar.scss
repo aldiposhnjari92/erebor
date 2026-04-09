@@ -3,11 +3,13 @@ $text-dark: #1a1f36;
 $text-muted: #6b7280;
 
 .navbar {
-  position: sticky;
+  position: fixed;
+  width: 100%;
   top: 0;
   z-index: 100;
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 
   &__container {
@@ -24,21 +26,24 @@ $text-muted: #6b7280;
   &__logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    text-decoration: none;
     flex-shrink: 0;
+    text-decoration: none;
   }
 
-  &__logo-icon {
-    width: 30px;
-    height: 30px;
+  /* 🔹 Mobile toggle */
+  &__toggle {
+    display: none;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
   }
 
-  &__logo-text {
-    font-size: 20px;
-    font-weight: 700;
-    color: $text-dark;
-    letter-spacing: -0.3px;
+  /* 🔹 Menu wrapper */
+  &__menu {
+    display: flex;
+    align-items: center;
+    gap: 24px;
   }
 
   &__links {
@@ -54,7 +59,6 @@ $text-muted: #6b7280;
     font-size: 14px;
     font-weight: 500;
     color: $text-muted !important;
-    text-decoration: none;
     border-radius: 6px !important;
 
     &:hover {
@@ -66,14 +70,12 @@ $text-muted: #6b7280;
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-shrink: 0;
   }
 
   &__login-btn {
     font-size: 14px !important;
     font-weight: 500 !important;
     color: $text-dark !important;
-    text-decoration: none;
     border-radius: 8px !important;
   }
 
@@ -81,13 +83,71 @@ $text-muted: #6b7280;
     font-size: 14px !important;
     font-weight: 600 !important;
     background-color: $blue-primary !important;
-    color: #ffffff !important;
+    color: #fff !important;
     border-radius: 8px !important;
     padding: 0 20px !important;
-    text-decoration: none;
 
     &:hover {
       background-color: #1241c0 !important;
+    }
+  }
+
+  /* =========================
+     📱 MOBILE STYLES
+  ========================= */
+  @media (max-width: 768px) {
+    &__toggle {
+      display: block;
+    }
+
+    &__menu {
+      position: absolute;
+      top: 68px;
+      left: 0;
+      width: 100%;
+      background: white;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 16px 24px;
+      gap: 16px;
+
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+      transition: all 0.25s ease;
+    }
+
+    &__menu--open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    &__links {
+      flex-direction: column;
+      width: 100%;
+      gap: 8px;
+
+      li {
+        width: 100%;
+      }
+    }
+
+    &__link {
+      width: 100%;
+    }
+
+    &__actions {
+      width: 100%;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    &__cta-btn,
+    &__login-btn {
+      width: 100%;
+      justify-content: center;
     }
   }
 }
