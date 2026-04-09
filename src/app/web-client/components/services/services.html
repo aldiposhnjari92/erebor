@@ -1,0 +1,95 @@
+<section class="services" id="features">
+  <div class="services__container">
+
+    <!-- ── Section header ─────────────────────────────────────────────── -->
+    <div class="services__header">
+      <span class="services__tag">Why SubTrack?</span>
+      <h2 class="services__title">
+        Stop paying for tools<br />nobody is using
+      </h2>
+      <p class="services__subtitle">
+        The average company wastes 30% of its SaaS spend on unused or duplicate subscriptions.
+        SubTrack gives you the visibility to fix that.
+      </p>
+    </div>
+
+    <!-- ── Feature cards ──────────────────────────────────────────────── -->
+    <div class="services__grid">
+      @for (feature of features; track feature.title) {
+        <div class="services__card">
+          <div class="services__card-icon" [style.background]="feature.color + '18'">
+            <mat-icon [style.color]="feature.color">{{ feature.icon }}</mat-icon>
+          </div>
+          <h3 class="services__card-title">{{ feature.title }}</h3>
+          <p class="services__card-description">{{ feature.description }}</p>
+          <a class="services__card-link" [style.color]="feature.color">
+            Learn more
+            <mat-icon class="services__card-link-icon">arrow_forward</mat-icon>
+          </a>
+        </div>
+      }
+    </div>
+
+    <!-- ── Integrations showcase ──────────────────────────────────────── -->
+    <div class="services__integrations" id="integrations">
+      <div class="services__int-header">
+        <h3 class="services__int-title">Connect your entire stack</h3>
+        <p class="services__int-sub">
+          Works with every major SaaS tool your team already uses.
+        </p>
+      </div>
+      <div class="services__int-grid">
+        @for (app of integrations; track app.name) {
+          <div class="services__int-tile" [title]="app.name">
+            <div class="services__int-logo" [style.background]="app.color">
+              {{ app.abbr }}
+            </div>
+            <span class="services__int-name">{{ app.name }}</span>
+          </div>
+        }
+        <div class="services__int-tile services__int-tile--more">
+          <div class="services__int-logo services__int-logo--more">+484</div>
+          <span class="services__int-name">more apps</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CTA banner ─────────────────────────────────────────────────── -->
+    <div class="services__cta">
+      <div class="services__cta-left">
+        <div class="services__cta-badge">Free for personal use</div>
+        <h3 class="services__cta-title">Start saving in 5 minutes</h3>
+        <p class="services__cta-text">
+          Connect your first app, see what you're spending, and find subscriptions you forgot about.
+          No credit card required.
+        </p>
+        <div class="services__cta-actions">
+          <a mat-flat-button class="services__cta-btn-primary" routerLink="/login">
+            Get started free
+            <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+          </a>
+          <a mat-button class="services__cta-btn-secondary" href="#integrations">
+            View all integrations
+          </a>
+        </div>
+      </div>
+      <div class="services__cta-right">
+        <div class="services__cta-stat">
+          <span class="services__cta-stat-value">$2,400</span>
+          <span class="services__cta-stat-label">Average annual savings</span>
+        </div>
+        <div class="services__cta-stat-divider"></div>
+        <div class="services__cta-stat">
+          <span class="services__cta-stat-value">30%</span>
+          <span class="services__cta-stat-label">Typical SaaS waste</span>
+        </div>
+        <div class="services__cta-stat-divider"></div>
+        <div class="services__cta-stat">
+          <span class="services__cta-stat-value">500+</span>
+          <span class="services__cta-stat-label">Apps supported</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

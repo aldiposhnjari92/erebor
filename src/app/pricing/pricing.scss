@@ -1,0 +1,423 @@
+$blue: #1652f0;
+$text-dark: #1a1f36;
+$text-muted: #6b7280;
+$border: #e5e7eb;
+$bg: #f8f9ff;
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+.pricing {
+  background: $bg;
+
+  // ── Header ─────────────────────────────────────────────────────────────
+
+  &__header {
+    text-align: center;
+    padding: 80px 24px 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__tag {
+    display: inline-flex;
+    background: rgba(22, 82, 240, .09);
+    color: $blue;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    padding: 5px 14px;
+    border-radius: 100px;
+  }
+
+  &__title {
+    font-size: 48px;
+    font-weight: 800;
+    color: $text-dark;
+    margin: 0;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+  }
+
+  &__subtitle {
+    font-size: 17px;
+    color: $text-muted;
+    margin: 0;
+    max-width: 520px;
+    line-height: 1.65;
+  }
+
+  // ── Billing toggle ─────────────────────────────────────────────────────
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  &__toggle-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: $text-muted;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color .2s;
+
+    &--active { color: $text-dark; font-weight: 600; }
+  }
+
+  &__toggle-save {
+    background: #d1fae5;
+    color: #065f46;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 100px;
+  }
+
+  &__toggle-btn {
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    background: $border;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: background .2s;
+    flex-shrink: 0;
+
+    &--annual {
+      background: $blue;
+
+      .pricing__toggle-thumb { transform: translateX(20px); }
+    }
+  }
+
+  &__toggle-thumb {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    transition: transform .2s;
+  }
+
+  // ── Plan cards ─────────────────────────────────────────────────────────
+
+  &__cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    align-items: start;
+  }
+
+  // ── Trust strip ────────────────────────────────────────────────────────
+
+  &__trust {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 32px 24px;
+    background: #fff;
+    border-top: 1px solid $border;
+    border-bottom: 1px solid $border;
+  }
+
+  &__trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: $text-muted;
+    font-weight: 500;
+
+    mat-icon {
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
+      color: $blue;
+    }
+  }
+
+  // ── FAQ ────────────────────────────────────────────────────────────────
+
+  &__faq {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  &__faq-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: $text-dark;
+    margin: 0;
+    text-align: center;
+    letter-spacing: -.7px;
+  }
+
+  &__faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__faq-panel {
+    border-radius: 12px !important;
+    border: 1px solid $border !important;
+    box-shadow: none !important;
+    overflow: hidden;
+
+    &.mat-expanded {
+      border-color: $blue !important;
+    }
+  }
+
+  &__faq-q {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: $text-dark !important;
+  }
+
+  &__faq-a {
+    font-size: 14px;
+    color: $text-muted;
+    line-height: 1.7;
+    margin: 0;
+    padding-bottom: 4px;
+  }
+
+  // ── Bottom CTA ─────────────────────────────────────────────────────────
+
+  &__cta {
+    text-align: center;
+    background: linear-gradient(160deg, #f0f4ff 0%, #eef2ff 100%);
+    padding: 80px 24px;
+    border-top: 1px solid $border;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__cta-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: $text-dark;
+    margin: 0;
+    letter-spacing: -1px;
+  }
+
+  &__cta-sub {
+    font-size: 16px;
+    color: $text-muted;
+    margin: 0;
+    max-width: 440px;
+    line-height: 1.6;
+  }
+
+  &__cta-btn {
+    background: $blue !important;
+    color: #fff !important;
+    height: 50px !important;
+    border-radius: 10px !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    padding: 0 28px !important;
+    text-decoration: none;
+    margin-top: 8px;
+  }
+}
+
+// ─── Plan card ────────────────────────────────────────────────────────────────
+
+.plan-card {
+  background: #fff;
+  border: 1px solid $border;
+  border-radius: 20px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  transition: box-shadow .2s, transform .2s;
+
+  &:hover {
+    box-shadow: 0 12px 40px rgba(0,0,0,.08);
+    transform: translateY(-3px);
+  }
+
+  &--featured {
+    border-color: $blue;
+    box-shadow: 0 8px 32px rgba(22,82,240,.14);
+    transform: scale(1.02);
+
+    &:hover {
+      transform: scale(1.02) translateY(-3px);
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    padding: 4px 14px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  &__name {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -.3px;
+  }
+
+  &__desc {
+    font-size: 13px;
+    color: $text-muted;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  &__price {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  &__price-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: $text-dark;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  &__price-sub {
+    font-size: 13px;
+    color: $text-muted;
+    font-weight: 500;
+  }
+
+  &__price-save {
+    font-size: 11px;
+    font-weight: 700;
+    background: #d1fae5;
+    color: #065f46;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-left: 4px;
+  }
+
+  &__trial {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #10b981;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 8px 12px;
+
+    mat-icon {
+      font-size: 16px !important;
+      width: 16px !important;
+      height: 16px !important;
+    }
+  }
+
+  &__cta {
+    width: 100%;
+    height: 44px !important;
+    border-radius: 10px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-decoration: none;
+
+    &--primary {
+      color: #fff !important;
+    }
+
+    &--outline {
+      background: transparent !important;
+    }
+  }
+
+  &__divider {
+    margin: 0 !important;
+  }
+
+  &__features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: $text-dark;
+
+    &--off {
+      color: $text-muted;
+    }
+  }
+
+  &__feature-icon {
+    font-size: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+    flex-shrink: 0;
+    margin-top: 1px;
+
+    &--check { color: #10b981; }
+    &--off { color: #d1d5db; }
+  }
+}
+
+// ─── Page footer ──────────────────────────────────────────────────────────────
+
+.pricing-footer {
+  background: #111827;
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(255,255,255,.4);
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: center;
+
+  a {
+    color: rgba(255,255,255,.55);
+    text-decoration: none;
+    &:hover { color: #fff; }
+  }
+}

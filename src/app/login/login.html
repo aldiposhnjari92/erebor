@@ -1,0 +1,254 @@
+<div class="login-page">
+  <div class="login-card">
+
+    <!-- ── Left Panel ──────────────────────────────────────────────────── -->
+    <div class="left-panel">
+      <div class="left-panel__logo">
+        <app-logo style="--logo-size: 32px; --logo-font-size: 20px;"></app-logo>
+      </div>
+
+      <div class="left-panel__body">
+
+        <!-- Dynamic heading per mode -->
+        <div class="left-panel__headline">
+          @if (mode() === 'signin') {
+            <h1 class="left-panel__title">Welcome back</h1>
+            <p class="left-panel__subtitle">Sign in to manage your subscriptions</p>
+          } @else if (mode() === 'signup') {
+            <h1 class="left-panel__title">Create account</h1>
+            <p class="left-panel__subtitle">Start tracking your subscriptions for free</p>
+          } @else {
+            <h1 class="left-panel__title">Reset password</h1>
+            <p class="left-panel__subtitle">We'll send you a reset link</p>
+          }
+        </div>
+
+        <!-- Alerts -->
+        @if (error()) {
+          <div class="left-panel__alert left-panel__alert--error">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ error() }}</span>
+          </div>
+        }
+        @if (success()) {
+          <div class="left-panel__alert left-panel__alert--success">
+            <mat-icon>check_circle_outline</mat-icon>
+            <span>{{ success() }}</span>
+          </div>
+        }
+
+        <!-- Google button (sign in / sign up only) -->
+        @if (mode() !== 'reset') {
+          <button
+            mat-stroked-button
+            class="left-panel__google-btn"
+            (click)="signInWithGoogle()"
+            [disabled]="loading()"
+          >
+            @if (loading()) {
+              <mat-spinner diameter="18"></mat-spinner>
+              <span>Signing in...</span>
+            } @else {
+              <svg class="left-panel__google-icon" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              <span>{{ mode() === 'signup' ? 'Sign up with Google' : 'Continue with Google' }}</span>
+            }
+          </button>
+
+          <div class="left-panel__divider">
+            <span class="left-panel__divider-line"></span>
+            <span class="left-panel__divider-text">or with email</span>
+            <span class="left-panel__divider-line"></span>
+          </div>
+        }
+
+        <!-- Email / password form -->
+        <form [formGroup]="form" (ngSubmit)="submitEmail()" class="left-panel__form">
+
+          @if (mode() === 'signup') {
+            <mat-form-field appearance="outline" class="left-panel__field">
+              <mat-label>Full name</mat-label>
+              <input matInput formControlName="displayName" placeholder="Alex Johnson" />
+              <mat-error>Name is required</mat-error>
+            </mat-form-field>
+          }
+
+          <mat-form-field appearance="outline" class="left-panel__field">
+            <mat-label>Email address</mat-label>
+            <input matInput formControlName="email" type="email" placeholder="you@company.com" />
+            <mat-error>Enter a valid email</mat-error>
+          </mat-form-field>
+
+          @if (mode() !== 'reset') {
+            <mat-form-field appearance="outline" class="left-panel__field">
+              <mat-label>Password</mat-label>
+              <input
+                matInput
+                formControlName="password"
+                [type]="hidePassword() ? 'password' : 'text'"
+              />
+              <button mat-icon-button matSuffix type="button" (click)="togglePassword()">
+                <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-error>Minimum 6 characters</mat-error>
+            </mat-form-field>
+          }
+
+          @if (mode() === 'signin') {
+            <div class="left-panel__options">
+              <mat-checkbox formControlName="rememberMe" class="left-panel__remember">
+                Remember me
+              </mat-checkbox>
+              <button type="button" mat-button class="left-panel__forgot" (click)="setMode('reset')">
+                Forgot password?
+              </button>
+            </div>
+          }
+
+          <button
+            mat-flat-button
+            type="submit"
+            class="left-panel__submit-btn"
+            [disabled]="loading()"
+          >
+            @if (loading()) {
+              <mat-spinner diameter="18"></mat-spinner>
+            }
+            @if (mode() === 'signin') { Sign In }
+            @else if (mode() === 'signup') { Create Account }
+            @else { Send Reset Link }
+          </button>
+        </form>
+
+        <!-- Mode switchers -->
+        <div class="left-panel__switch">
+          @if (mode() === 'signin') {
+            <span>Don't have an account?</span>
+            <button mat-button class="left-panel__switch-btn" (click)="setMode('signup')">Sign up free</button>
+          } @else if (mode() === 'signup') {
+            <span>Already have an account?</span>
+            <button mat-button class="left-panel__switch-btn" (click)="setMode('signin')">Sign in</button>
+          } @else {
+            <button mat-button class="left-panel__switch-btn" (click)="setMode('signin')">
+              <mat-icon>arrow_back</mat-icon> Back to sign in
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="left-panel__footer">
+        <a href="#" class="left-panel__footer-link">Privacy</a>
+        <a href="#" class="left-panel__footer-link">Terms</a>
+        <span class="left-panel__footer-copy">© 2025 SubTrack</span>
+      </div>
+    </div>
+
+    <!-- ── Right Panel ─────────────────────────────────────────────────── -->
+    <div class="right-panel">
+      <div class="right-panel__bg-grid"></div>
+
+      <div class="right-panel__content">
+        <div class="right-panel__mockup">
+
+          <!-- Main dashboard card -->
+          <div class="mock-card mock-card--main">
+            <div class="mock-card__header">
+              <span class="mock-card__title">Active Subscriptions</span>
+              <span class="mock-card__badge">12 apps</span>
+            </div>
+            <div class="mock-sub-list">
+
+              <div class="mock-sub">
+                <div class="mock-sub__logo" style="background:#4A154B">S</div>
+                <div class="mock-sub__info">
+                  <p class="mock-sub__name">Slack</p>
+                  <p class="mock-sub__cycle">15 seats · monthly</p>
+                </div>
+                <span class="mock-sub__amount">$108.75</span>
+              </div>
+
+              <div class="mock-sub">
+                <div class="mock-sub__logo" style="background:#5059C9">T</div>
+                <div class="mock-sub__info">
+                  <p class="mock-sub__name">Microsoft 365</p>
+                  <p class="mock-sub__cycle">15 seats · monthly</p>
+                </div>
+                <span class="mock-sub__amount">$187.50</span>
+              </div>
+
+              <div class="mock-sub">
+                <div class="mock-sub__logo" style="background:#4285F4">GW</div>
+                <div class="mock-sub__info">
+                  <p class="mock-sub__name">Google Workspace</p>
+                  <p class="mock-sub__cycle">15 seats · monthly</p>
+                </div>
+                <span class="mock-sub__amount">$180.00</span>
+              </div>
+
+              <div class="mock-sub">
+                <div class="mock-sub__logo" style="background:#F24E1E">Fi</div>
+                <div class="mock-sub__info">
+                  <p class="mock-sub__name">Figma</p>
+                  <p class="mock-sub__cycle">5 editors · monthly</p>
+                </div>
+                <span class="mock-sub__amount">$60.00</span>
+              </div>
+
+              <div class="mock-sub">
+                <div class="mock-sub__logo" style="background:#000000">N</div>
+                <div class="mock-sub__info">
+                  <p class="mock-sub__name">Notion</p>
+                  <p class="mock-sub__cycle">Team plan · monthly</p>
+                </div>
+                <span class="mock-sub__amount">$16.00</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Monthly spend card -->
+          <div class="mock-card mock-card--spend">
+            <p class="mock-card__label">Monthly Spend</p>
+            <p class="mock-card__value">$342.80</p>
+            <div class="mock-bar">
+              <div class="mock-bar__fill" style="width:68%"></div>
+            </div>
+            <p class="mock-card__budget">$500 budget · 68%</p>
+          </div>
+
+          <!-- Renewal alert -->
+          <div class="mock-card mock-card--alert">
+            <div class="mock-card__alert-dot"></div>
+            <div>
+              <p class="mock-card__alert-title">Slack renews in 3 days</p>
+              <p class="mock-card__alert-sub">$108.75 · Jan 12 — tap to manage</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="right-panel__promo">
+          <h2 class="right-panel__promo-title">All your tools. One clear view.</h2>
+          <p class="right-panel__promo-desc">
+            Connect Slack, Microsoft 365, Google Workspace and 500+ apps.
+            Track costs, spot waste, and manage every renewal in one place.
+          </p>
+          <div class="right-panel__app-logos">
+            <div class="right-panel__app-logo" style="background:#4A154B" title="Slack">S</div>
+            <div class="right-panel__app-logo" style="background:#5059C9" title="Teams">T</div>
+            <div class="right-panel__app-logo" style="background:#4285F4" title="Google">G</div>
+            <div class="right-panel__app-logo" style="background:#F24E1E" title="Figma">Fi</div>
+            <div class="right-panel__app-logo" style="background:#000" title="Notion">N</div>
+            <div class="right-panel__app-logo" style="background:#2D8CFF" title="Zoom">Z</div>
+            <div class="right-panel__app-logo right-panel__app-logo--more">+494</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

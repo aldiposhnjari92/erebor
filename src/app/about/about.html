@@ -1,0 +1,154 @@
+<app-navbar></app-navbar>
+
+<main class="about">
+
+  <!-- ── Hero ───────────────────────────────────────────────────────────── -->
+  <section class="about__hero">
+    <span class="about__tag">Our story</span>
+    <h1 class="about__hero-title">
+      We built SubTrack because<br />
+      <span class="about__hero-accent">SaaS billing is a mess</span>
+    </h1>
+    <p class="about__hero-subtitle">
+      It started with a spreadsheet, an exit interview, and $800/month in subscriptions
+      nobody remembered signing up for.
+    </p>
+  </section>
+
+  <!-- ── Story ──────────────────────────────────────────────────────────── -->
+  <section class="about__story">
+    <div class="about__story-container">
+      <div class="about__story-content">
+        <h2 class="about__story-title">The problem nobody was solving</h2>
+        <p class="about__story-p">
+          In 2022, our co-founders were running a 12-person product team. When a key
+          engineer left, they did an offboarding audit and found 11 active SaaS subscriptions
+          tied to his company email — tools the team hadn't used in months.
+        </p>
+        <p class="about__story-p">
+          The exercise revealed a pattern: duplicate tools bought by different departments,
+          annual plans forgotten after the first month, free trials that auto-converted years
+          ago. The team was paying over $800/month for subscriptions they didn't need.
+        </p>
+        <p class="about__story-p">
+          They looked for a tool to fix this. Nothing good existed. So they built Erebor.
+        </p>
+      </div>
+
+      <div class="about__story-visual">
+        <div class="about__story-card">
+          <div class="about__story-card-icon">
+            <mat-icon>search</mat-icon>
+          </div>
+          <p class="about__story-card-num">11</p>
+          <p class="about__story-card-label">forgotten subscriptions found</p>
+        </div>
+        <div class="about__story-card about__story-card--accent">
+          <div class="about__story-card-icon">
+            <mat-icon>attach_money</mat-icon>
+          </div>
+          <p class="about__story-card-num">$800+</p>
+          <p class="about__story-card-label">wasted per month</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Stats ──────────────────────────────────────────────────────────── -->
+  <section class="about__stats">
+    @for (stat of stats; track stat.label) {
+      <div class="about__stat">
+        <span class="about__stat-value">{{ stat.value }}</span>
+        <span class="about__stat-label">{{ stat.label }}</span>
+      </div>
+    }
+  </section>
+
+  <!-- ── Values ─────────────────────────────────────────────────────────── -->
+  <section class="about__values">
+    <div class="about__values-container">
+      <div class="about__values-header">
+        <h2 class="about__section-title">What we believe</h2>
+        <p class="about__section-sub">
+          Four principles that guide every product decision we make.
+        </p>
+      </div>
+      <div class="about__values-grid">
+        @for (val of values; track val.title) {
+          <div class="about__value-card">
+            <div class="about__value-icon" [style.background]="val.color + '18'">
+              <mat-icon [style.color]="val.color">{{ val.icon }}</mat-icon>
+            </div>
+            <h3 class="about__value-title">{{ val.title }}</h3>
+            <p class="about__value-desc">{{ val.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Team ───────────────────────────────────────────────────────────── -->
+  <section class="about__team">
+    <div class="about__team-container">
+      <div class="about__values-header">
+        <h2 class="about__section-title">The team</h2>
+        <p class="about__section-sub">
+          A small team with a focused mission: make subscription chaos manageable.
+        </p>
+      </div>
+      <div class="about__team-grid">
+        @for (member of team; track member.name) {
+          <div class="about__team-card">
+            <div class="about__team-avatar" [style.background]="member.color">
+              {{ member.avatar }}
+            </div>
+            <h3 class="about__team-name">{{ member.name }}</h3>
+            <p class="about__team-role">{{ member.role }}</p>
+            <p class="about__team-bio">{{ member.bio }}</p>
+          </div>
+        }
+      </div>
+
+      <div class="about__team-hiring">
+        <mat-icon class="about__team-hiring-icon">diversity_3</mat-icon>
+        <div>
+          <p class="about__team-hiring-title">We're hiring</p>
+          <p class="about__team-hiring-sub">
+            Passionate about SaaS, simplicity, or both? We'd love to hear from you.
+          </p>
+        </div>
+        <a mat-stroked-button class="about__team-hiring-btn" href="mailto:jobs@subtrack.io">
+          See open roles
+          <mat-icon iconPositionEnd>open_in_new</mat-icon>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ────────────────────────────────────────────────────────────── -->
+  <section class="about__cta">
+    <h2 class="about__cta-title">Ready to take back control?</h2>
+    <p class="about__cta-sub">
+      Join 4,200+ teams who use SubTrack to manage their subscriptions.
+      Free to start. No credit card needed.
+    </p>
+    <div class="about__cta-actions">
+      <a mat-flat-button class="about__cta-btn-primary" routerLink="/login">
+        Get started free
+        <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+      </a>
+      <a mat-button class="about__cta-btn-secondary" routerLink="/pricing">
+        View pricing
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ──────────────────────────────────────────────────────────────── -->
+<footer class="about-footer">
+  <span>© 2025 Erebor · </span>
+  <a routerLink="/pricing">Pricing</a>
+  <a href="#">Privacy</a>
+  <a href="#">Terms</a>
+</footer>

@@ -1,0 +1,554 @@
+<div class="dashboard" [class.dashboard--collapsed]="sidebarCollapsed()" [class.dashboard--mobile-open]="mobileSidebarOpen()">
+
+  <!-- Mobile backdrop -->
+  <div class="dashboard__overlay" (click)="toggleMobileSidebar()"></div>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────────── -->
+  <aside class="sidebar" [class.sidebar--mobile-open]="mobileSidebarOpen()">
+    <div class="sidebar__header">
+      <a class="sidebar__logo" routerLink="/">
+        <app-logo></app-logo>
+      </a>
+      <button mat-icon-button class="sidebar__collapse-btn" (click)="toggleSidebar()">
+        <mat-icon>{{ sidebarCollapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+      </button>
+    </div>
+
+    <nav class="sidebar__nav">
+      <button
+        class="sidebar__nav-item"
+        [class.sidebar__nav-item--active]="activeSection() === 'overview'"
+        (click)="setSection('overview')"
+        [matTooltip]="sidebarCollapsed() ? 'Overview' : ''"
+      >
+        <mat-icon>dashboard</mat-icon>
+        <span class="sidebar__nav-label">Overview</span>
+      </button>
+      <button
+        class="sidebar__nav-item"
+        [class.sidebar__nav-item--active]="activeSection() === 'subscriptions'"
+        (click)="setSection('subscriptions')"
+        [matTooltip]="sidebarCollapsed() ? 'Subscriptions' : ''"
+      >
+        <mat-icon>subscriptions</mat-icon>
+        <span class="sidebar__nav-label">Subscriptions</span>
+      </button>
+      <button
+        class="sidebar__nav-item"
+        [class.sidebar__nav-item--active]="activeSection() === 'analytics'"
+        (click)="setSection('analytics')"
+        [matTooltip]="sidebarCollapsed() ? 'Analytics' : ''"
+      >
+        <mat-icon>bar_chart</mat-icon>
+        <span class="sidebar__nav-label">Analytics</span>
+      </button>
+
+      <button
+        class="sidebar__nav-item"
+        [class.sidebar__nav-item--active]="activeSection() === 'billing'"
+        (click)="setSection('billing')"
+        [matTooltip]="sidebarCollapsed() ? 'Billing' : ''"
+      >
+        <mat-icon>credit_card</mat-icon>
+        <span class="sidebar__nav-label">Billing</span>
+      </button>
+
+      @if (auth.isAdmin()) {
+        <div class="sidebar__section-label">Admin</div>
+        <button
+          class="sidebar__nav-item"
+          [class.sidebar__nav-item--active]="activeSection() === 'users'"
+          (click)="setSection('users')"
+          [matTooltip]="sidebarCollapsed() ? 'Users' : ''"
+        >
+          <mat-icon>manage_accounts</mat-icon>
+          <span class="sidebar__nav-label">Users</span>
+        </button>
+      }
+    </nav>
+
+    <div class="sidebar__footer">
+      <mat-divider></mat-divider>
+      <button
+        class="sidebar__nav-item sidebar__nav-item--secondary"
+        (click)="openOnboarding()"
+        [matTooltip]="sidebarCollapsed() ? 'Getting Started' : ''"
+      >
+        <mat-icon>help_outline</mat-icon>
+        <span class="sidebar__nav-label">Getting Started</span>
+      </button>
+
+      <div class="sidebar__user">
+        @if (auth.user()?.photoURL) {
+          <img [src]="auth.user()!.photoURL!" class="sidebar__user-avatar" alt="avatar" />
+        } @else {
+          <div class="sidebar__user-avatar sidebar__user-avatar--placeholder">
+            {{ (auth.user()?.displayName ?? 'U')[0] }}
+          </div>
+        }
+        <div class="sidebar__user-info">
+          <p class="sidebar__user-name">{{ auth.user()?.displayName ?? 'User' }}</p>
+          <p class="sidebar__user-role">{{ auth.isAdmin() ? 'Administrator' : 'Member' }}</p>
+        </div>
+        <button mat-icon-button class="sidebar__signout" (click)="signOut()" matTooltip="Sign out">
+          <mat-icon>logout</mat-icon>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ───────────────────────────────────────────────────── -->
+  <main class="dashboard__main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar__left">
+        <button mat-icon-button class="topbar__mobile-menu" (click)="toggleMobileSidebar()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <div class="topbar__titles">
+          <h1 class="topbar__title">
+            @switch (activeSection()) {
+              @case ('overview') { Overview }
+              @case ('subscriptions') { My Subscriptions }
+              @case ('analytics') { Analytics }
+              @case ('billing') { Billing }
+              @case ('users') { User Management }
+            }
+          </h1>
+          <span class="topbar__greeting">
+            Good day, {{ (auth.user()?.displayName ?? 'there').split(' ')[0] }}
+          </span>
+        </div>
+      </div>
+      <div class="topbar__actions">
+        <!-- Widget customization menu -->
+        <button mat-stroked-button [matMenuTriggerFor]="widgetMenu" class="topbar__customize-btn">
+          <mat-icon>tune</mat-icon>
+          Customize
+        </button>
+        <mat-menu #widgetMenu="matMenu" class="widget-menu">
+          <div class="widget-menu__header">Show / hide widgets</div>
+          @for (w of widgets(); track w.id) {
+            @if (!w.adminOnly || auth.isAdmin()) {
+              <button mat-menu-item (click)="toggleWidget(w.id); $event.stopPropagation()">
+                <mat-icon [class.widget-menu__icon--on]="w.visible">
+                  {{ w.visible ? 'check_box' : 'check_box_outline_blank' }}
+                </mat-icon>
+                <mat-icon>{{ w.icon }}</mat-icon>
+                {{ w.label }}
+              </button>
+            }
+          }
+        </mat-menu>
+
+        @if (activeSection() !== 'subscriptions') {
+          <button mat-flat-button class="topbar__add-btn" (click)="openAddSubscription()">
+            <mat-icon>add</mat-icon>
+            Add Subscription
+          </button>
+        }
+      </div>
+    </header>
+
+    <!-- ── Overview section ──────────────────────────────────────────── -->
+    @if (activeSection() === 'overview') {
+      <div class="dashboard__content">
+
+        <!-- KPI row -->
+        @if (visibleWidgets().some(w => w.id === 'overview')) {
+          <div class="kpi-row">
+            <div class="kpi-card">
+              <div class="kpi-card__icon kpi-card__icon--blue">
+                <mat-icon>subscriptions</mat-icon>
+              </div>
+              <div class="kpi-card__body">
+                <p class="kpi-card__label">Active Subscriptions</p>
+                <p class="kpi-card__value">{{ activeSubscriptions().length }}</p>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-card__icon kpi-card__icon--green">
+                <mat-icon>payments</mat-icon>
+              </div>
+              <div class="kpi-card__body">
+                <p class="kpi-card__label">Monthly Spend</p>
+                <p class="kpi-card__value">{{ formatAmount(monthlySpend()) }}</p>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-card__icon kpi-card__icon--orange">
+                <mat-icon>schedule</mat-icon>
+              </div>
+              <div class="kpi-card__body">
+                <p class="kpi-card__label">Renewing (30 days)</p>
+                <p class="kpi-card__value">{{ upcomingRenewals().length }}</p>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-card__icon kpi-card__icon--purple">
+                <mat-icon>account_balance_wallet</mat-icon>
+              </div>
+              <div class="kpi-card__body">
+                <p class="kpi-card__label">Budget Used</p>
+                <p class="kpi-card__value">{{ budgetUsedPercent() }}%</p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <div class="dashboard__grid">
+
+          <!-- Budget widget -->
+          @if (visibleWidgets().some(w => w.id === 'budget')) {
+            <div class="widget widget--budget">
+              <div class="widget__header">
+                <div class="widget__title-group">
+                  <mat-icon class="widget__icon">account_balance_wallet</mat-icon>
+                  <h3 class="widget__title">Monthly Budget</h3>
+                </div>
+                <button mat-icon-button matTooltip="Edit budget">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+              <div class="budget">
+                <div class="budget__amounts">
+                  <span class="budget__spent">{{ formatAmount(monthlySpend()) }}</span>
+                  <span class="budget__of">of</span>
+                  <span class="budget__total">{{ formatAmount(monthlyBudget()) }}</span>
+                </div>
+                <mat-progress-bar
+                  mode="determinate"
+                  [value]="budgetUsedPercent()"
+                  [color]="budgetUsedPercent() > 80 ? 'warn' : 'primary'"
+                  class="budget__bar"
+                ></mat-progress-bar>
+                <p class="budget__hint">
+                  {{ budgetUsedPercent() <= 80
+                    ? formatAmount(monthlyBudget() - monthlySpend()) + ' remaining this month'
+                    : 'You\'re close to your budget limit!' }}
+                </p>
+              </div>
+            </div>
+          }
+
+          <!-- Upcoming renewals widget -->
+          @if (visibleWidgets().some(w => w.id === 'renewals')) {
+            <div class="widget widget--renewals">
+              <div class="widget__header">
+                <div class="widget__title-group">
+                  <mat-icon class="widget__icon">schedule</mat-icon>
+                  <h3 class="widget__title">Upcoming Renewals</h3>
+                </div>
+                <span class="widget__badge">{{ upcomingRenewals().length }}</span>
+              </div>
+              <div class="renewals">
+                @for (sub of upcomingRenewals(); track sub.id) {
+                  <div class="renewal-item">
+                    <div
+                      class="renewal-item__icon"
+                      [style.background]="sub.color + '20'"
+                      [style.color]="sub.color"
+                    >
+                      <mat-icon>{{ sub.icon }}</mat-icon>
+                    </div>
+                    <div class="renewal-item__info">
+                      <p class="renewal-item__name">{{ sub.name }}</p>
+                      <p class="renewal-item__date">
+                        {{ sub.nextRenewal | date:'MMM d' }} ·
+                        <span
+                          [class.renewal-item__days--urgent]="daysUntil(sub.nextRenewal) <= 5"
+                        >
+                          {{ daysUntil(sub.nextRenewal) }}d
+                        </span>
+                      </p>
+                    </div>
+                    <span class="renewal-item__amount">{{ formatAmount(sub.amount) }}</span>
+                  </div>
+                } @empty {
+                  <div class="renewals__empty">
+                    <mat-icon>check_circle</mat-icon>
+                    <p>No renewals in the next 30 days</p>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Spend by category widget -->
+          <div class="widget widget--categories">
+            <div class="widget__header">
+              <div class="widget__title-group">
+                <mat-icon class="widget__icon">donut_small</mat-icon>
+                <h3 class="widget__title">Spend by Category</h3>
+              </div>
+            </div>
+            <div class="categories">
+              @for (cat of spendByCategory(); track cat.category) {
+                <div class="category-row">
+                  <div
+                    class="category-row__dot"
+                    [style.background]="cat.meta.color"
+                  ></div>
+                  <mat-icon class="category-row__icon" [style.color]="cat.meta.color">
+                    {{ cat.meta.icon }}
+                  </mat-icon>
+                  <span class="category-row__label">{{ cat.meta.label }}</span>
+                  <div class="category-row__bar-wrap">
+                    <div
+                      class="category-row__bar"
+                      [style.background]="cat.meta.color"
+                      [style.width.%]="(cat.amount / monthlySpend()) * 100"
+                    ></div>
+                  </div>
+                  <span class="category-row__amount">{{ formatAmount(cat.amount) }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+        </div>
+      </div>
+    }
+
+    <!-- ── Subscriptions section ──────────────────────────────────────── -->
+    @if (activeSection() === 'subscriptions') {
+      <div class="dashboard__content">
+        @if (subsLoading()) {
+          <div class="analytics-placeholder">
+            <mat-icon class="analytics-placeholder__icon">hourglass_empty</mat-icon>
+            <h3>Loading subscriptions…</h3>
+          </div>
+        } @else if (visibleWidgets().some(w => w.id === 'subscriptions')) {
+          <div class="subs-grid">
+            @for (sub of subscriptions(); track sub.id) {
+              <div class="sub-card">
+                <div class="sub-card__header">
+                  <div
+                    class="sub-card__icon"
+                    [style.background]="sub.color + '18'"
+                    [style.color]="sub.color"
+                  >
+                    <mat-icon>{{ sub.icon }}</mat-icon>
+                  </div>
+                  <div
+                    class="sub-card__status"
+                    [class.sub-card__status--active]="sub.status === 'active'"
+                    [class.sub-card__status--paused]="sub.status === 'paused'"
+                    [class.sub-card__status--cancelled]="sub.status === 'cancelled'"
+                  >
+                    {{ sub.status }}
+                  </div>
+                </div>
+                <h4 class="sub-card__name">{{ sub.name }}</h4>
+                <p class="sub-card__category">{{ CATEGORY_META[sub.category].label }}</p>
+                <div class="sub-card__footer">
+                  <div class="sub-card__price">
+                    <span class="sub-card__amount">{{ formatAmount(sub.amount) }}</span>
+                    <span class="sub-card__cycle">/ {{ sub.billingCycle }}</span>
+                  </div>
+                  <div class="sub-card__renewal">
+                    <mat-icon class="sub-card__renewal-icon">schedule</mat-icon>
+                    <span>{{ daysUntil(sub.nextRenewal) }}d</span>
+                  </div>
+                </div>
+                <div class="sub-card__actions">
+                  <button mat-stroked-button class="sub-card__btn" (click)="openEditSubscription(sub)">
+                    <mat-icon>edit</mat-icon>
+                    Edit
+                  </button>
+                  <button mat-icon-button matTooltip="More options" [matMenuTriggerFor]="subMenu">
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #subMenu>
+                    <button mat-menu-item (click)="pauseSubscription(sub)">
+                      <mat-icon>{{ sub.status === 'paused' ? 'play_arrow' : 'pause' }}</mat-icon>
+                      {{ sub.status === 'paused' ? 'Resume' : 'Pause' }}
+                    </button>
+                    <button mat-menu-item (click)="cancelSubscription(sub)">
+                      <mat-icon>cancel</mat-icon> Cancel subscription
+                    </button>
+                    <button mat-menu-item class="menu-item--danger" (click)="deleteSubscription(sub)">
+                      <mat-icon>delete</mat-icon> Delete
+                    </button>
+                  </mat-menu>
+                </div>
+              </div>
+            }
+
+            <!-- Add new card -->
+            <div class="sub-card sub-card--add" (click)="openAddSubscription()">
+              <mat-icon class="sub-card__add-icon">add_circle_outline</mat-icon>
+              <p class="sub-card__add-text">Add Subscription</p>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ── Analytics section ─────────────────────────────────────────── -->
+    @if (activeSection() === 'analytics') {
+      <div class="dashboard__content">
+        <div class="analytics-placeholder">
+          <mat-icon class="analytics-placeholder__icon">bar_chart</mat-icon>
+          <h3>Analytics coming soon</h3>
+          <p>Detailed spending charts and trends will appear here.</p>
+        </div>
+      </div>
+    }
+
+    <!-- ── Billing section ──────────────────────────────────────────── -->
+    @if (activeSection() === 'billing') {
+      <div class="dashboard__content">
+
+        <!-- Trial banner -->
+        @if (auth.user()?.billingStatus === 'trial') {
+          <div class="billing-trial-banner">
+            <mat-icon class="billing-trial-banner__icon">timer</mat-icon>
+            <div class="billing-trial-banner__body">
+              <p class="billing-trial-banner__title">
+                Your <strong>{{ currentPlan().label }}</strong> trial ends in
+                <strong>{{ trialDaysLeft() }} days</strong>
+              </p>
+              <p class="billing-trial-banner__sub">
+                Add a payment method before your trial expires to keep access to all features.
+              </p>
+            </div>
+            <a mat-flat-button class="billing-trial-banner__btn" routerLink="/pricing">
+              View plans
+              <mat-icon iconPositionEnd>open_in_new</mat-icon>
+            </a>
+          </div>
+        }
+
+        <div class="billing-grid">
+
+          <!-- Current plan card -->
+          <div class="widget billing-plan-card">
+            <div class="widget__header">
+              <div class="widget__title-group">
+                <mat-icon class="widget__icon">workspace_premium</mat-icon>
+                <h3 class="widget__title">Current Plan</h3>
+              </div>
+              <span
+                class="billing-status"
+                [class.billing-status--trial]="auth.user()?.billingStatus === 'trial'"
+                [class.billing-status--active]="auth.user()?.billingStatus === 'active'"
+                [class.billing-status--past_due]="auth.user()?.billingStatus === 'past_due'"
+                [class.billing-status--cancelled]="auth.user()?.billingStatus === 'cancelled'"
+              >{{ auth.user()?.billingStatus ?? 'trial' }}</span>
+            </div>
+
+            <div class="billing-plan">
+              <div class="billing-plan__badge"
+                [style.background]="currentPlan().color + '18'"
+                [style.color]="currentPlan().color"
+              >
+                <mat-icon>workspace_premium</mat-icon>
+                <span>{{ currentPlan().label }}</span>
+              </div>
+              <div class="billing-plan__details">
+                @if (auth.user()?.billingStatus === 'trial') {
+                  <div class="billing-plan__row">
+                    <span class="billing-plan__label">Status</span>
+                    <span class="billing-plan__value">Free trial active</span>
+                  </div>
+                  <div class="billing-plan__row">
+                    <span class="billing-plan__label">Trial expires</span>
+                    <span class="billing-plan__value">{{ auth.user()?.trialEndsAt | date:'MMMM d, y' }}</span>
+                  </div>
+                  <div class="billing-plan__row">
+                    <span class="billing-plan__label">Days remaining</span>
+                    <span class="billing-plan__value billing-plan__value--highlight">{{ trialDaysLeft() }} days</span>
+                  </div>
+                } @else {
+                  <div class="billing-plan__row">
+                    <span class="billing-plan__label">Status</span>
+                    <span class="billing-plan__value">{{ auth.user()?.billingStatus }}</span>
+                  </div>
+                }
+              </div>
+              <mat-divider class="billing-plan__divider"></mat-divider>
+              <a mat-stroked-button class="billing-plan__change-btn" routerLink="/pricing">
+                <mat-icon>compare_arrows</mat-icon>
+                Compare plans
+              </a>
+            </div>
+          </div>
+
+          <!-- Payment method card -->
+          <div class="widget billing-payment-card">
+            <div class="widget__header">
+              <div class="widget__title-group">
+                <mat-icon class="widget__icon">credit_card</mat-icon>
+                <h3 class="widget__title">Payment Method</h3>
+              </div>
+              <span class="billing-coming-soon">Coming soon</span>
+            </div>
+
+            <div class="billing-payment">
+              <div class="billing-payment__empty">
+                <div class="billing-payment__empty-icon">
+                  <mat-icon>credit_card_off</mat-icon>
+                </div>
+                <p class="billing-payment__empty-title">No payment method added</p>
+                <p class="billing-payment__empty-sub">
+                  Payment processing will be available shortly.
+                  You'll be notified when it goes live.
+                </p>
+                <button mat-flat-button class="billing-payment__add-btn" disabled>
+                  <mat-icon>add</mat-icon>
+                  Add payment method
+                </button>
+                <p class="billing-payment__note">
+                  <mat-icon class="billing-payment__note-icon">lock</mat-icon>
+                  Payments secured with bank-level encryption
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Billing history placeholder -->
+        <div class="widget">
+          <div class="widget__header">
+            <div class="widget__title-group">
+              <mat-icon class="widget__icon">receipt_long</mat-icon>
+              <h3 class="widget__title">Billing History</h3>
+            </div>
+          </div>
+          <div class="billing-history-empty">
+            <mat-icon>receipt_long</mat-icon>
+            <p>No invoices yet — billing history will appear here once you subscribe.</p>
+          </div>
+        </div>
+
+      </div>
+    }
+
+    <!-- ── Admin: User Management ─────────────────────────────────────── -->
+    @if (activeSection() === 'users' && auth.isAdmin()) {
+      <div class="dashboard__content">
+        <div class="widget">
+          <div class="widget__header">
+            <div class="widget__title-group">
+              <mat-icon class="widget__icon">manage_accounts</mat-icon>
+              <h3 class="widget__title">All Users</h3>
+            </div>
+            <button mat-flat-button class="widget__action-btn" disabled>
+              <mat-icon>person_add</mat-icon>
+              Invite User
+            </button>
+          </div>
+          <div class="analytics-placeholder">
+            <mat-icon class="analytics-placeholder__icon">manage_accounts</mat-icon>
+            <h3>User management coming soon</h3>
+            <p>Configure Firestore security rules and a UserService to list and manage team members.</p>
+          </div>
+        </div>
+      </div>
+    }
+
+  </main>
+</div>

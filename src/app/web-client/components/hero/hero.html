@@ -1,0 +1,164 @@
+<section class="hero">
+  <div class="hero__container">
+
+    <!-- ── Left: Copy ──────────────────────────────────────────────────── -->
+    <div class="hero__content">
+      <span class="hero__tag">
+        <mat-icon class="hero__tag-icon">bolt</mat-icon>
+        Subscription management, simplified
+      </span>
+
+      <h1 class="hero__title">
+        All your tools.<br />
+        <span class="hero__title--accent">One dashboard.</span>
+      </h1>
+
+      <p class="hero__description">
+        Connect Slack, Microsoft Teams, Google Workspace and 500+ apps.
+        Track every subscription your team uses, spot waste, and manage
+        renewals before they surprise you.
+      </p>
+
+      <div class="hero__actions">
+        <a mat-flat-button class="hero__btn hero__btn--primary" routerLink="/login">
+          Start for free
+          <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+        </a>
+        <a mat-stroked-button class="hero__btn hero__btn--secondary" href="#features">
+          See how it works
+        </a>
+      </div>
+
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <span class="hero__stat-value">500+</span>
+          <span class="hero__stat-label">Integrations</span>
+        </div>
+        <div class="hero__stat-divider"></div>
+        <div class="hero__stat">
+          <span class="hero__stat-value">$2,400</span>
+          <span class="hero__stat-label">Avg. annual savings</span>
+        </div>
+        <div class="hero__stat-divider"></div>
+        <div class="hero__stat">
+          <span class="hero__stat-value">5 min</span>
+          <span class="hero__stat-label">To connect</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Right: Dashboard preview ───────────────────────────────────── -->
+    <div class="hero__visual">
+      <div class="hero__visual-glow"></div>
+
+      <!-- Main dashboard mockup -->
+      <div class="hero__dashboard">
+
+        <div class="hero__dash-header">
+          <span class="hero__dash-title">Subscriptions</span>
+          <div class="hero__dash-actions">
+            <div class="hero__dash-search">
+              <mat-icon>search</mat-icon>
+            </div>
+            <div class="hero__dash-add">+ Add</div>
+          </div>
+        </div>
+
+        <!-- Total spend bar -->
+        <div class="hero__dash-spend">
+          <div class="hero__dash-spend-row">
+            <span class="hero__dash-spend-label">Monthly Spend</span>
+            <strong class="hero__dash-spend-value">$342.80</strong>
+          </div>
+          <div class="hero__dash-bar">
+            <div class="hero__dash-bar-fill" style="width: 68%"></div>
+          </div>
+          <div class="hero__dash-spend-row hero__dash-spend-row--small">
+            <span>$500 budget</span>
+            <span class="hero__dash-remaining">$157.20 remaining</span>
+          </div>
+        </div>
+
+        <!-- Subscription tiles -->
+        <div class="hero__sub-grid">
+
+          <div class="hero__sub-tile">
+            <div class="hero__sub-tile-logo" style="background:#4A154B">S</div>
+            <p class="hero__sub-tile-name">Slack</p>
+            <p class="hero__sub-tile-price">$108.75</p>
+            <span class="hero__sub-tile-status hero__sub-tile-status--active">Active</span>
+          </div>
+
+          <div class="hero__sub-tile">
+            <div class="hero__sub-tile-logo" style="background:#5059C9">T</div>
+            <p class="hero__sub-tile-name">Teams</p>
+            <p class="hero__sub-tile-price">$187.50</p>
+            <span class="hero__sub-tile-status hero__sub-tile-status--active">Active</span>
+          </div>
+
+          <div class="hero__sub-tile">
+            <div class="hero__sub-tile-logo" style="background:#4285F4">G</div>
+            <p class="hero__sub-tile-name">Workspace</p>
+            <p class="hero__sub-tile-price">$180.00</p>
+            <span class="hero__sub-tile-status hero__sub-tile-status--active">Active</span>
+          </div>
+
+          <div class="hero__sub-tile">
+            <div class="hero__sub-tile-logo" style="background:#F24E1E">Fi</div>
+            <p class="hero__sub-tile-name">Figma</p>
+            <p class="hero__sub-tile-price">$60.00</p>
+            <span class="hero__sub-tile-status hero__sub-tile-status--active">Active</span>
+          </div>
+
+          <div class="hero__sub-tile">
+            <div class="hero__sub-tile-logo" style="background:#000">N</div>
+            <p class="hero__sub-tile-name">Notion</p>
+            <p class="hero__sub-tile-price">$16.00</p>
+            <span class="hero__sub-tile-status hero__sub-tile-status--renewing">3d</span>
+          </div>
+
+          <div class="hero__sub-tile">
+            <div class="hero__sub-tile-logo" style="background:#2D8CFF">Z</div>
+            <p class="hero__sub-tile-name">Zoom</p>
+            <p class="hero__sub-tile-price">$15.99</p>
+            <span class="hero__sub-tile-status hero__sub-tile-status--active">Active</span>
+          </div>
+
+          <div class="hero__sub-tile">
+            <div class="hero__sub-tile-logo" style="background:#0052CC">J</div>
+            <p class="hero__sub-tile-name">Jira</p>
+            <p class="hero__sub-tile-price">$77.50</p>
+            <span class="hero__sub-tile-status hero__sub-tile-status--active">Active</span>
+          </div>
+
+          <div class="hero__sub-tile">
+            <div class="hero__sub-tile-logo" style="background:#24292e">GH</div>
+            <p class="hero__sub-tile-name">GitHub</p>
+            <p class="hero__sub-tile-price">$19.00</p>
+            <span class="hero__sub-tile-status hero__sub-tile-status--active">Active</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Floating: renewal alert -->
+      <div class="hero__float hero__float--alert">
+        <div class="hero__float-dot"></div>
+        <div>
+          <p class="hero__float-title">Notion renews in 3 days</p>
+          <p class="hero__float-sub">$16.00 · Jan 12</p>
+        </div>
+      </div>
+
+      <!-- Floating: savings found -->
+      <div class="hero__float hero__float--saving">
+        <mat-icon class="hero__float-icon">savings</mat-icon>
+        <div>
+          <p class="hero__float-title">$48 of unused seats found</p>
+          <p class="hero__float-sub">Microsoft 365 · 4 inactive</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

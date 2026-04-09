@@ -1,0 +1,188 @@
+<app-navbar></app-navbar>
+
+<main class="pricing">
+
+  <!-- ── Header ─────────────────────────────────────────────────────────── -->
+  <div class="pricing__header">
+    <span class="pricing__tag">Pricing</span>
+    <h1 class="pricing__title">Simple, honest pricing</h1>
+    <p class="pricing__subtitle">
+      Start free for 14 days on any paid plan. No credit card required.
+      Downgrade or cancel at any time.
+    </p>
+
+    <!-- Billing toggle -->
+    <div class="pricing__toggle">
+      <span class="pricing__toggle-label" [class.pricing__toggle-label--active]="!isAnnual()">
+        Monthly
+      </span>
+      <button
+        class="pricing__toggle-btn"
+        [class.pricing__toggle-btn--annual]="isAnnual()"
+        (click)="toggleBilling()"
+        type="button"
+      >
+        <span class="pricing__toggle-thumb"></span>
+      </button>
+      <span class="pricing__toggle-label" [class.pricing__toggle-label--active]="isAnnual()">
+        Annual
+        <span class="pricing__toggle-save">Save up to 22%</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ── Plan cards ─────────────────────────────────────────────────────── -->
+  <div class="pricing__cards">
+    @for (plan of plans; track plan.id) {
+      <div
+        class="plan-card"
+        [class.plan-card--featured]="plan.badge"
+        [style.--plan-color]="plan.color"
+      >
+        @if (plan.badge) {
+          <div class="plan-card__badge" [style.background]="plan.badgeColor">
+            {{ plan.badge }}
+          </div>
+        }
+
+        <div class="plan-card__header">
+          <h2 class="plan-card__name" [style.color]="plan.color">{{ plan.name }}</h2>
+          <p class="plan-card__desc">{{ plan.description }}</p>
+        </div>
+
+        <div class="plan-card__price">
+          @if (plan.monthlyPrice === null) {
+            <span class="plan-card__price-value">Custom</span>
+          } @else if (plan.monthlyPrice === 0) {
+            <span class="plan-card__price-value">Free</span>
+            <span class="plan-card__price-sub">forever</span>
+          } @else {
+            <span class="plan-card__price-value">{{ price(plan) }}</span>
+            <span class="plan-card__price-sub">/ month</span>
+            @if (isAnnual() && annualSavings(plan) > 0) {
+              <span class="plan-card__price-save">Save ${{ annualSavings(plan) }}/yr</span>
+            }
+          }
+        </div>
+
+        @if (plan.trial) {
+          <div class="plan-card__trial">
+            <mat-icon>timer</mat-icon>
+            14-day free trial · no card needed
+          </div>
+        }
+
+        <!-- CTA -->
+        @if (plan.ctaStyle === 'primary') {
+          <a
+            mat-flat-button
+            class="plan-card__cta plan-card__cta--primary"
+            routerLink="/login"
+            [style.background]="plan.color"
+          >
+            {{ plan.cta }}
+          </a>
+        } @else if (plan.ctaStyle === 'outline') {
+          <a
+            mat-stroked-button
+            class="plan-card__cta plan-card__cta--outline"
+            routerLink="/login"
+            [style.border-color]="plan.color"
+            [style.color]="plan.color"
+          >
+            {{ plan.cta }}
+          </a>
+        } @else {
+          <a
+            mat-stroked-button
+            class="plan-card__cta plan-card__cta--outline"
+            href="mailto:sales@subtrack.io"
+            [style.border-color]="plan.color"
+            [style.color]="plan.color"
+          >
+            {{ plan.cta }}
+          </a>
+        }
+
+        <mat-divider class="plan-card__divider"></mat-divider>
+
+        <!-- Features included -->
+        <ul class="plan-card__features">
+          @for (feat of plan.features; track feat) {
+            <li class="plan-card__feature">
+              <mat-icon class="plan-card__feature-icon plan-card__feature-icon--check">
+                check_circle
+              </mat-icon>
+              <span>{{ feat }}</span>
+            </li>
+          }
+          @for (lim of plan.limits; track lim) {
+            <li class="plan-card__feature plan-card__feature--off">
+              <mat-icon class="plan-card__feature-icon plan-card__feature-icon--off">
+                remove
+              </mat-icon>
+              <span>{{ lim }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+
+  <!-- ── Trust strip ────────────────────────────────────────────────────── -->
+  <div class="pricing__trust">
+    <div class="pricing__trust-item">
+      <mat-icon>lock</mat-icon>
+      <span>Bank-level encryption</span>
+    </div>
+    <div class="pricing__trust-item">
+      <mat-icon>cancel</mat-icon>
+      <span>Cancel anytime</span>
+    </div>
+    <div class="pricing__trust-item">
+      <mat-icon>shield</mat-icon>
+      <span>GDPR compliant</span>
+    </div>
+    <div class="pricing__trust-item">
+      <mat-icon>support_agent</mat-icon>
+      <span>Human support on all plans</span>
+    </div>
+  </div>
+
+  <!-- ── FAQ ────────────────────────────────────────────────────────────── -->
+  <div class="pricing__faq">
+    <h2 class="pricing__faq-title">Frequently asked questions</h2>
+
+    <mat-accordion class="pricing__faq-list">
+      @for (faq of faqs; track faq.q) {
+        <mat-expansion-panel class="pricing__faq-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title class="pricing__faq-q">{{ faq.q }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p class="pricing__faq-a">{{ faq.a }}</p>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  </div>
+
+  <!-- ── Bottom CTA ─────────────────────────────────────────────────────── -->
+  <div class="pricing__cta">
+    <h2 class="pricing__cta-title">Still not sure? Start free.</h2>
+    <p class="pricing__cta-sub">
+      The Starter plan is free forever — no trial needed. Upgrade whenever you're ready.
+    </p>
+    <a mat-flat-button class="pricing__cta-btn" routerLink="/login">
+      Create free account
+      <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+    </a>
+  </div>
+
+</main>
+
+<!-- ── Footer ───────────────────────────────────────────────────────────── -->
+<footer class="pricing-footer">
+  <span>© 2025 Erebor · </span>
+  <a routerLink="/about">About</a>
+  <a href="#">Privacy</a>
+  <a href="#">Terms</a>
+</footer>

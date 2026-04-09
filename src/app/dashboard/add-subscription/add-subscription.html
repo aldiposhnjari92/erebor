@@ -1,0 +1,174 @@
+<div class="add-sub">
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <div class="add-sub__header">
+    @if (step() === 'configure') {
+      <button mat-icon-button class="add-sub__back-btn" (click)="back()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    }
+    <div class="add-sub__header-text">
+      @if (step() === 'pick') {
+        <h2 class="add-sub__title">Add Subscription</h2>
+        <p class="add-sub__subtitle">Choose a service or add a custom one</p>
+      } @else if (isEditMode) {
+        <h2 class="add-sub__title">Edit Subscription</h2>
+        <p class="add-sub__subtitle">Update the details below</p>
+      } @else {
+        <div class="add-sub__service-header">
+          <div
+            class="add-sub__service-icon"
+            [style.background]="selectedService()!.color + '18'"
+            [style.color]="selectedService()!.color"
+          >
+            <mat-icon>{{ selectedService()!.icon }}</mat-icon>
+          </div>
+          <div>
+            <h2 class="add-sub__title">{{ selectedService()!.name === 'Custom' ? 'Custom subscription' : selectedService()!.name }}</h2>
+            <p class="add-sub__subtitle">{{ CATEGORY_META[selectedService()!.category].label }}</p>
+          </div>
+        </div>
+      }
+    </div>
+    <button mat-icon-button class="add-sub__close-btn" (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- ── Step 1: Pick a service ──────────────────────────────────────────── -->
+  @if (step() === 'pick') {
+    <div class="add-sub__pick">
+
+      <!-- Search -->
+      <div class="add-sub__search-wrap">
+        <mat-icon class="add-sub__search-icon">search</mat-icon>
+        <input
+          class="add-sub__search"
+          type="text"
+          placeholder="Search services…"
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Category filter chips -->
+      <div class="add-sub__chips">
+        @for (f of categoryFilters; track f.id) {
+          <button
+            class="add-sub__chip"
+            [class.add-sub__chip--active]="activeCategory() === f.id"
+            (click)="activeCategory.set(f.id)"
+          >{{ f.label }}</button>
+        }
+      </div>
+
+      <!-- Service grid -->
+      <div class="add-sub__catalog">
+        @for (service of filteredCatalog(); track service.name) {
+          <button class="service-tile" (click)="selectService(service)">
+            <div
+              class="service-tile__icon"
+              [style.background]="service.color + '18'"
+              [style.color]="service.color"
+            >
+              <mat-icon>{{ service.icon }}</mat-icon>
+            </div>
+            <span class="service-tile__name">{{ service.name }}</span>
+            <span class="service-tile__price">
+              @if (service.defaultAmount > 0) {
+                ${{ service.defaultAmount }}/mo
+              } @else {
+                Custom
+              }
+            </span>
+          </button>
+        } @empty {
+          <div class="add-sub__empty">
+            <mat-icon>search_off</mat-icon>
+            <p>No services found</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ── Step 2: Configure ───────────────────────────────────────────────── -->
+  @if (step() === 'configure') {
+    <form class="add-sub__form" [formGroup]="form" (ngSubmit)="submit()">
+
+      <!-- Name (editable for Custom) -->
+      <mat-form-field appearance="outline" class="add-sub__field add-sub__field--full">
+        <mat-label>Subscription name</mat-label>
+        <input matInput formControlName="name" placeholder="e.g. Netflix" />
+        <mat-error>Name is required</mat-error>
+      </mat-form-field>
+
+      <!-- Amount + Currency -->
+      <div class="add-sub__row">
+        <mat-form-field appearance="outline" class="add-sub__field add-sub__field--amount">
+          <mat-label>Amount</mat-label>
+          <span matTextPrefix>{{ currencySymbol }}&nbsp;</span>
+          <input matInput type="number" formControlName="amount" min="0.01" step="0.01" placeholder="0.00" />
+          <mat-error>Enter a valid amount</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="add-sub__field add-sub__field--currency">
+          <mat-label>Currency</mat-label>
+          <mat-select formControlName="currency">
+            <mat-option value="USD">USD $</mat-option>
+            <mat-option value="EUR">EUR €</mat-option>
+            <mat-option value="GBP">GBP £</mat-option>
+            <mat-option value="CAD">CAD $</mat-option>
+            <mat-option value="AUD">AUD $</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Billing cycle -->
+      <mat-form-field appearance="outline" class="add-sub__field add-sub__field--full">
+        <mat-label>Billing cycle</mat-label>
+        <mat-select formControlName="billingCycle">
+          <mat-option value="weekly">Weekly</mat-option>
+          <mat-option value="monthly">Monthly</mat-option>
+          <mat-option value="annual">Annual</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Next renewal -->
+      <mat-form-field appearance="outline" class="add-sub__field add-sub__field--full">
+        <mat-label>Next renewal date</mat-label>
+        <input matInput [matDatepicker]="renewalPicker" formControlName="nextRenewal" />
+        <mat-datepicker-toggle matIconSuffix [for]="renewalPicker"></mat-datepicker-toggle>
+        <mat-datepicker #renewalPicker></mat-datepicker>
+        <mat-error>Renewal date is required</mat-error>
+      </mat-form-field>
+
+      <!-- Notes -->
+      <mat-form-field appearance="outline" class="add-sub__field add-sub__field--full">
+        <mat-label>Notes (optional)</mat-label>
+        <textarea matInput formControlName="notes" rows="2" placeholder="Any notes about this subscription…"></textarea>
+      </mat-form-field>
+
+      <!-- Actions -->
+      <div class="add-sub__actions">
+        <button type="button" mat-stroked-button class="add-sub__cancel-btn" (click)="close()">
+          Cancel
+        </button>
+        @if (isEditMode) {
+          <button type="submit" mat-flat-button class="add-sub__submit-btn">
+            <mat-icon>save</mat-icon>
+            Save Changes
+          </button>
+        } @else {
+          <button type="submit" mat-flat-button class="add-sub__submit-btn">
+            <mat-icon>add</mat-icon>
+            Add Subscription
+          </button>
+        }
+      </div>
+
+    </form>
+  }
+
+</div>

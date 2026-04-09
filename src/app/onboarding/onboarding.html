@@ -1,0 +1,161 @@
+<div class="onboarding">
+
+  <!-- Progress bar -->
+  <div class="onboarding__progress">
+    <div
+      class="onboarding__progress-fill"
+      [style.width.%]="((currentStep() + 1) / steps.length) * 100"
+    ></div>
+  </div>
+
+  <!-- Step content -->
+  <div class="onboarding__body">
+    @let step = steps[currentStep()];
+
+    <div class="onboarding__step-icon" [style.background]="step.iconColor + '18'">
+      <mat-icon [style.color]="step.iconColor">{{ step.icon }}</mat-icon>
+    </div>
+
+    <div class="onboarding__step-count">
+      Step {{ currentStep() + 1 }} of {{ steps.length }}
+    </div>
+
+    <h2 class="onboarding__step-title">{{ step.title }}</h2>
+    <p class="onboarding__step-desc">{{ step.description }}</p>
+
+    @if (step.tip) {
+      <div class="onboarding__tip">
+        <mat-icon class="onboarding__tip-icon">lightbulb</mat-icon>
+        <span>{{ step.tip }}</span>
+      </div>
+    }
+
+    <!-- Step visual preview -->
+    <div class="onboarding__preview">
+      @switch (currentStep()) {
+        @case (0) {
+          <div class="preview-welcome">
+            <div class="preview-welcome__stat">
+              <span class="preview-welcome__num">4</span>
+              <span class="preview-welcome__label">Subscriptions</span>
+            </div>
+            <div class="preview-welcome__stat">
+              <span class="preview-welcome__num">$38</span>
+              <span class="preview-welcome__label">/ month</span>
+            </div>
+            <div class="preview-welcome__stat">
+              <span class="preview-welcome__num">2</span>
+              <span class="preview-welcome__label">Renewing soon</span>
+            </div>
+          </div>
+        }
+        @case (1) {
+          <div class="preview-subs">
+            <div class="preview-sub" style="--c:#ef4444">
+              <mat-icon style="color:#ef4444">play_circle</mat-icon>
+              <span>Netflix</span>
+              <strong>$15.99</strong>
+            </div>
+            <div class="preview-sub" style="--c:#ec4899">
+              <mat-icon style="color:#ec4899">music_note</mat-icon>
+              <span>Spotify</span>
+              <strong>$9.99</strong>
+            </div>
+            <div class="preview-sub" style="--c:#1652f0">
+              <mat-icon style="color:#1652f0">code</mat-icon>
+              <span>Copilot</span>
+              <strong>$10.00</strong>
+            </div>
+          </div>
+        }
+        @case (2) {
+          <div class="preview-alert">
+            <mat-icon class="preview-alert__icon">schedule</mat-icon>
+            <div>
+              <p class="preview-alert__title">Netflix renews in 5 days</p>
+              <p class="preview-alert__sub">$15.99 · Dec 14 — tap to manage</p>
+            </div>
+          </div>
+        }
+        @case (3) {
+          <div class="preview-budget">
+            <div class="preview-budget__row">
+              <span>Spent</span>
+              <strong>$38.97 / $75.00</strong>
+            </div>
+            <div class="preview-budget__bar">
+              <div class="preview-budget__fill" style="width:52%"></div>
+            </div>
+            <p class="preview-budget__hint">52% of monthly budget used</p>
+          </div>
+        }
+        @case (4) {
+          <div class="preview-cats">
+            <div class="preview-cat">
+              <div class="preview-cat__dot" style="background:#ef4444"></div>
+              <span>Streaming</span>
+              <div class="preview-cat__bar"><div style="width:55%; background:#ef4444"></div></div>
+              <strong>$15.99</strong>
+            </div>
+            <div class="preview-cat">
+              <div class="preview-cat__dot" style="background:#ec4899"></div>
+              <span>Music</span>
+              <div class="preview-cat__bar"><div style="width:30%; background:#ec4899"></div></div>
+              <strong>$9.99</strong>
+            </div>
+            <div class="preview-cat">
+              <div class="preview-cat__dot" style="background:#1652f0"></div>
+              <span>Productivity</span>
+              <div class="preview-cat__bar"><div style="width:28%; background:#1652f0"></div></div>
+              <strong>$10.00</strong>
+            </div>
+          </div>
+        }
+        @case (5) {
+          <div class="preview-done">
+            <mat-icon class="preview-done__check">check_circle</mat-icon>
+            <p>Dashboard ready</p>
+          </div>
+        }
+      }
+    </div>
+  </div>
+
+  <!-- Step dots -->
+  <div class="onboarding__dots">
+    @for (s of steps; track $index) {
+      <button
+        class="onboarding__dot"
+        [class.onboarding__dot--active]="$index === currentStep()"
+        (click)="currentStep.set($index)"
+      ></button>
+    }
+  </div>
+
+  <!-- Actions -->
+  <div class="onboarding__actions">
+    <button mat-button class="onboarding__skip-btn" (click)="skip()">
+      Skip tour
+    </button>
+    <div class="onboarding__nav-btns">
+      @if (!isFirstStep) {
+        <button mat-stroked-button class="onboarding__back-btn" (click)="prev()">
+          <mat-icon>arrow_back</mat-icon>
+          Back
+        </button>
+      }
+      @if (!isLastStep) {
+        <button mat-flat-button class="onboarding__next-btn" (click)="next()">
+          Next
+          <mat-icon iconPositionEnd>arrow_forward</mat-icon>
+        </button>
+      } @else {
+        <button mat-flat-button class="onboarding__finish-btn" (click)="finish()">
+          <mat-icon>rocket_launch</mat-icon>
+          Get Started
+        </button>
+      }
+    </div>
+  </div>
+
+</div>

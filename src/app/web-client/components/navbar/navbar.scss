@@ -1,0 +1,93 @@
+$blue-primary: #1652f0;
+$text-dark: #1a1f36;
+$text-muted: #6b7280;
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+
+  &__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  &__logo-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  &__logo-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: $text-dark;
+    letter-spacing: -0.3px;
+  }
+
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__link {
+    font-size: 14px;
+    font-weight: 500;
+    color: $text-muted !important;
+    text-decoration: none;
+    border-radius: 6px !important;
+
+    &:hover {
+      color: $text-dark !important;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  &__login-btn {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: $text-dark !important;
+    text-decoration: none;
+    border-radius: 8px !important;
+  }
+
+  &__cta-btn {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    background-color: $blue-primary !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    padding: 0 20px !important;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #1241c0 !important;
+    }
+  }
+}
